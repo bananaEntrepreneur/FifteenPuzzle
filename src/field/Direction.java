@@ -1,4 +1,4 @@
-package Model.gamefield;
+package field;
 
 // Направление - "север/юг/запад/восток"
 public class Direction {

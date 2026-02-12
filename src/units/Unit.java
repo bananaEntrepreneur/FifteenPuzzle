@@ -4,14 +4,34 @@ import field.Cell;
 
 public abstract class Unit {
     private Cell _cell;
+    private boolean _active;
 
-    protected boolean canBelongTo(Cell owner) {}
+    public Unit() {
+        this._active = true;
+    }
+
+    protected abstract boolean canBelongTo(Cell owner);
 
     public Cell owner() {
         return _cell;
     }
 
-    public void activate() {}
+    public void setOwner(Cell cell) {
+        if (!canBelongTo(cell)) {
+            throw new IllegalArgumentException("Unit cannot belong to the specified cell");
+        }
+        this._cell = cell;
+    }
 
-    public void deactivate() {}
+    public boolean isActive() {
+        return _active;
+    }
+
+    public void activate() {
+        this._active = true;
+    }
+
+    public void deactivate() {
+        this._active = false;
+    }
 }
