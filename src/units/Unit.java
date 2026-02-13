@@ -17,8 +17,8 @@ public abstract class Unit {
     }
 
     public void setOwner(Cell cell) {
-        if (!canBelongTo(cell)) {
-            throw new IllegalArgumentException("Unit cannot belong to the specified cell");
+        if(!canBelongTo(cell)) {
+            throw new IllegalArgumentException("Cannot belong to this cell!");
         }
         this._cell = cell;
     }
