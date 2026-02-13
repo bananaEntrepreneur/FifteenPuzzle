@@ -3,17 +3,20 @@ package saboteur;
 import java.awt.geom.Dimension2D;
 
 public abstract class Saboteur {
-    public void start() {}
+    public void start() {
+        equipTiles();
+        startEquipMines();
+    }
 
-    protected void equipTiles() {}
+    protected abstract void equipTiles();
 
-    protected void startEquipMines() {}
+    protected abstract void startEquipMines();
 
-    protected void periodicalEquipMines() {}
+    protected abstract void periodicalEquipMines();
 
-    protected boolean areTilesInFinishConfiguration() {}
+    protected abstract boolean areTilesInFinishConfiguration();
 
-    protected Dimension2D getFieldSize() {}
+    protected abstract Dimension2D getFieldSize();
 
     public void deactivate() {}
 }
