@@ -16,11 +16,12 @@ public abstract class Unit {
         return _cell;
     }
 
-    public void setOwner(Cell cell) {
+    public boolean setOwner(Cell cell) {
         if(!canBelongTo(cell)) {
             throw new IllegalArgumentException("Cannot belong to this cell!");
         }
         this._cell = cell;
+        return true;
     }
 
     public boolean isActive() {

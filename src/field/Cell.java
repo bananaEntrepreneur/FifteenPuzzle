@@ -18,14 +18,13 @@ public class Cell {
             return false;
         }
 
-        if (!u.canBelongTo(this)) {
-            return false;
-        }
-
         boolean added = u.setOwner(this);
 
-        boolean added = _units.add(u);
-        return added;
+        if(added) {
+            _units.add(u);
+            return true;
+        }
+        return false;
     }
 
     public <T extends Unit> T getUnit(Class<T> cl) {
@@ -61,12 +60,11 @@ public class Cell {
         }
         
         boolean removed = _units.remove(u);
-        if (removed) {
-            // Reset the unit's owner reference
-            // We need to temporarily make setOwner accessible in Unit class
-            // For now, we'll skip resetting the owner to avoid needing reflection
+        if(removed) {
+            u.setOwner(null);
+            return true;
         }
-        return removed;
+        return false;
     }
 
     public boolean isEmpty() {

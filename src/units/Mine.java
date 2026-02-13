@@ -2,9 +2,6 @@ package units;
 
 import field.Cell;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Mine extends Unit {
     private final int _explosionDelay;
     private int _timeToExplosion;
