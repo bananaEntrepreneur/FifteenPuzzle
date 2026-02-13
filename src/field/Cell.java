@@ -7,10 +7,20 @@ import java.util.*;
 public class Cell {
     private final Set<Unit> _units;
     private final Map<Direction, Cell> _neighbors;
+    private CellPosition _pos;
 
-    public Cell() {
-        this._units = new HashSet<>();
-        this._neighbors = new HashMap<>();
+    public Cell(int row, int col) {
+        _units = new HashSet<>();
+        _neighbors = new HashMap<>();
+        _pos = new CellPosition(row, col);
+    }
+
+    public int getRow() {
+        return _pos.getRow();
+    }
+
+    public int getCol() {
+        return _pos.getColumn();
     }
 
     public boolean putUnit(Unit u) {
