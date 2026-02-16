@@ -41,13 +41,20 @@ public class Cell {
         if (cl == null) {
             return null;
         }
-        
+
         for (Unit unit : _units) {
             if (cl.isInstance(unit)) {
                 return cl.cast(unit);
             }
         }
         return null;
+    }
+
+    public Unit getUnit() {
+        if (_units.isEmpty()) {
+            return null;
+        }
+        return _units.iterator().next();
     }
 
     public <T extends Unit> Collection<T> getUnits(Class<T> cl) {
