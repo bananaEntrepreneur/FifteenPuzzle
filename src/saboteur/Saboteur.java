@@ -1,6 +1,6 @@
 package saboteur;
 
-import java.awt.geom.Dimension2D;
+import java.awt.Dimension;
 
 public abstract class Saboteur {
     public void start() {
@@ -16,7 +16,7 @@ public abstract class Saboteur {
 
     protected abstract boolean areTilesInFinishConfiguration();
 
-    protected abstract Dimension2D getFieldSize();
+    protected abstract Dimension getFieldSize();
 
     public void deactivate() {}
 }
