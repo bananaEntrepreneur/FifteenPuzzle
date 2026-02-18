@@ -1,4 +1,4 @@
-package field;
+package cell;
 
 import java.util.Iterator;
 

@@ -1,4 +1,6 @@
-package field;
+package cell;
+
+import field.Direction;
 
 import java.util.ArrayList;
 import java.util.List;

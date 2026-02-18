@@ -1,5 +1,7 @@
-package field;
+package cell;
 
+import field.Direction;
+import listeners.CellStateListener;
 import units.Unit;
 
 import java.util.*;
@@ -7,12 +9,36 @@ import java.util.*;
 public class Cell {
     private final Set<Unit> _units;
     private final Map<Direction, Cell> _neighbors;
-    private CellPosition _pos;
+    private final List<CellStateListener> _listeners;
+    private final CellPosition _pos;
 
     public Cell(int row, int col) {
         _units = new HashSet<>();
         _neighbors = new HashMap<>();
+        _listeners = new ArrayList<>();
         _pos = new CellPosition(row, col);
+    }
+
+    public void addListener(CellStateListener listener) {
+        if (listener != null) {
+            _listeners.add(listener);
+        }
+    }
+
+    public void removeListener(CellStateListener listener) {
+        _listeners.remove(listener);
+    }
+
+    private void fireUnitPlaced(Unit unit) {
+        for (CellStateListener listener : _listeners) {
+            listener.unitPlaced(this, unit);
+        }
+    }
+
+    private void fireUnitExtracted(Unit unit) {
+        for (CellStateListener listener : _listeners) {
+            listener.unitExtracted(this, unit);
+        }
     }
 
     public int getRow() {
@@ -32,6 +58,7 @@ public class Cell {
 
         if(added) {
             _units.add(u);
+            fireUnitPlaced(u);
             return true;
         }
         return false;
@@ -75,10 +102,11 @@ public class Cell {
         if (u == null) {
             return false;
         }
-        
+
         boolean removed = _units.remove(u);
         if(removed) {
             u.setOwner(null);
+            fireUnitExtracted(u);
             return true;
         }
         return false;
