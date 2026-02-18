@@ -1,30 +1,28 @@
 package field;
 
-import saboteur.SimpleSaboteur;
-
 import java.awt.Dimension;
 
 public class Game {
-    private final GameField field;
-    private final SimpleSaboteur saboteur;
-    private boolean gameOver;
+    private final GameField _field;
+    private final SimpleSaboteur _saboteur;
+    private boolean _gameOver;
 
     public Game(int width, int height) {
-        this.field = new GameField();
-        this.field.setSize(new Dimension(width, height));
-        this.saboteur = new SimpleSaboteur(field, width, height);
-        this.gameOver = false;
+        this._field = new GameField();
+        this._field.setSize(new Dimension(width, height));
+        this._saboteur = new SimpleSaboteur(_field, width, height);
+        this._gameOver = false;
     }
 
     public void start() {
-        saboteur.start();
+        _saboteur.start();
     }
 
     public boolean isOver() {
-        return gameOver;
+        return _gameOver;
     }
 
-    public GameField getField() {
-        return field;
+    public GameField get_field() {
+        return _field;
     }
 }

@@ -1,5 +1,8 @@
 package field;
 
+import cell.Cell;
+import cell.CellPosition;
+
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,16 +12,14 @@ import java.util.NoSuchElementException;
 public class GameField implements Iterable<Cell> {
     private int _height;
     private int _width;
-    private final Map<CellPosition, Cell> _cells;
+    private final Map<CellPosition, Cell> _cells = new HashMap<>();
 
     public GameField() {
-        _cells = new HashMap<>();
         _width = 0;
         _height = 0;
     }
 
     public GameField(int width, int height) {
-        _cells = new HashMap<>();
         setSize(new Dimension(width, height));
     }
 
