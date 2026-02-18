@@ -1,6 +1,6 @@
 package units;
 
-import field.Cell;
+import cell.Cell;
 
 public class FreezeMine extends Mine {
     private final int _freezeDuration;

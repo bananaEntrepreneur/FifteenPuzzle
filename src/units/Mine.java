@@ -1,6 +1,6 @@
 package units;
 
-import field.Cell;
+import cell.Cell;
 
 public class Mine extends Unit {
     private final int _explosionDelay;
@@ -10,6 +10,10 @@ public class Mine extends Unit {
         super();
         this._explosionDelay = Math.max(1, explosionDelay);
         this._timeToExplosion = explosionDelay;
+    }
+
+    protected void mineExploded() {
+        fireStateChanged();
     }
 
     @Override
@@ -41,6 +45,8 @@ public class Mine extends Unit {
         applyEffect();
 
         deactivate();
+
+        mineExploded();
     }
 
     protected void applyEffect() {
@@ -59,7 +65,10 @@ public class Mine extends Unit {
     }
 
     protected void affectCell(Cell cell) {
-
+        Tile tile = cell.getUnit(Tile.class);
+        if (tile != null) {
+            tile.deactivate();
+        }
     }
 
     public int getTimeToExplosion() {
@@ -68,5 +77,10 @@ public class Mine extends Unit {
 
     public int getExplosionDelay() {
         return _explosionDelay;
+    }
+
+    @Override
+    public String toString() {
+        return "M" + _timeToExplosion;
     }
 }

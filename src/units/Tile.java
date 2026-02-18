@@ -1,6 +1,6 @@
 package units;
 
-import field.Cell;
+import cell.Cell;
 
 public class Tile extends Unit {
     private final int _number;
@@ -29,6 +29,10 @@ public class Tile extends Unit {
         return false;
     }
 
+    private boolean hasTile(Cell cell) {
+        return cell.getUnit(Tile.class) != null;
+    }
+
     @Override
     public boolean canBelongTo(Cell owner) {
         return owner != null;
@@ -44,7 +48,7 @@ public class Tile extends Unit {
             return false;
         }
 
-        if (!neighbor.isEmpty()) {
+        if (hasTile(neighbor)) {
             return false;
         }
 
@@ -52,7 +56,11 @@ public class Tile extends Unit {
             return false;
         }
 
-        return neighbor.putUnit(this);
+        boolean placed = neighbor.putUnit(this);
+        if (placed) {
+            fireStateChanged();
+        }
+        return placed;
     }
 
     public int getNumber() {
