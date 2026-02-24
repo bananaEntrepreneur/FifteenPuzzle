@@ -1,22 +1,23 @@
 package timer;
 
+import java.util.Timer;
 import java.util.TimerTask;
 
 public class TickTimer extends MyTimer {
-    private final int tickInterval;
-    private int currentTickCount;
-    private TimerTask scheduledTask;
+    private final int _tickInterval;
+    private int _currentTickCount;
+    private TimerTask _scheduledTask;
 
     public TickTimer(int tickInterval) {
         super();
-        this.tickInterval = tickInterval;
-        this.currentTickCount = 0;
+        _tickInterval = tickInterval;
+        _currentTickCount = 0;
     }
 
     @Override
     public void schedule(TimerTask task, long period) {
         if (!isRunning && task != null) {
-            scheduledTask = task;
+            _scheduledTask = task;
             internalTimer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
@@ -32,11 +33,11 @@ public class TickTimer extends MyTimer {
             return;
         }
 
-        currentTickCount++;
-        if (currentTickCount >= tickInterval) {
-            currentTickCount = 0;
-            if (scheduledTask != null) {
-                scheduledTask.run();
+        _currentTickCount++;
+        if (_currentTickCount >= _tickInterval) {
+            _currentTickCount = 0;
+            if (_scheduledTask != null) {
+                _scheduledTask.run();
             }
         }
     }
@@ -45,13 +46,13 @@ public class TickTimer extends MyTimer {
     public void stop() {
         if (isRunning) {
             internalTimer.cancel();
-            internalTimer = new java.util.Timer();
+            internalTimer = new Timer();
             isRunning = false;
-            currentTickCount = 0;
+            _currentTickCount = 0;
         }
     }
 
     public int getTickInterval() {
-        return tickInterval;
+        return _tickInterval;
     }
 }

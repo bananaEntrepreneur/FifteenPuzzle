@@ -1,14 +1,16 @@
 package view;
 
-import field.GameField;
+import game.Game;
 
 import javax.swing.*;
 
 public class GameFrame extends JFrame {
 
     public GameFrame() {
-        GameField field = new GameField(4, 4);
-        GameFieldView mainBox = new GameFieldView(field);
+        Game game = new Game(4, 4);
+        game.start();
+        
+        GameFieldView mainBox = new GameFieldView(game.get_field());
 
         setContentPane(mainBox);
         pack();

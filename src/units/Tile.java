@@ -22,20 +22,37 @@ public class Tile extends Unit {
 
         for (Cell neighbor : currentCell.getNeighborCells()) {
             if (neighbor != null && neighbor.isEmpty()) {
-                return moveTo(neighbor);
+                boolean moved = moveTo(neighbor);
+                if (moved) {
+                    tileMoved();
+                }
+                return moved;
             }
         }
 
         return false;
     }
 
-    private boolean hasTile(Cell cell) {
-        return cell.getUnit(Tile.class) != null;
-    }
-
     @Override
     public boolean canBelongTo(Cell owner) {
         return owner != null;
+    }
+
+    public void tileMoved() {
+        fireStateChanged();
+    }
+
+    public int getNumber() {
+        return _number;
+    }
+
+    @Override
+    public String toString() {
+        return "" + _number;
+    }
+
+    private boolean hasTile(Cell cell) {
+        return cell.getUnit(Tile.class) != null;
     }
 
     private boolean moveTo(Cell neighbor) {
@@ -61,14 +78,5 @@ public class Tile extends Unit {
             fireStateChanged();
         }
         return placed;
-    }
-
-    public int getNumber() {
-        return _number;
-    }
-
-    @Override
-    public String toString() {
-        return "" + _number;
     }
 }

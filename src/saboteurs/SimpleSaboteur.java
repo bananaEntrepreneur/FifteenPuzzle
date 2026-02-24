@@ -1,20 +1,25 @@
-package saboteur;
+package saboteurs;
 
-import field.GameField;
-import field.Cell;
-import field.CellPosition;
+import cell.Cell;
+import cell.CellPosition;
+import game.GameField;
+import game.Saboteur;
+import listeners.StateChangeListeners;
+import timer.TimerFactory;
+import units.FreezeMine;
 import units.Tile;
 import units.Mine;
+
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EventObject;
 import java.util.List;
-import java.util.Random;
 
 public class SimpleSaboteur extends Saboteur {
 
     public SimpleSaboteur(GameField field, int width, int height) {
-        super(field, width, height, 10, new Random());
+        super(field, width, height, 10, new TimerFactory());
     }
 
     @Override
@@ -53,8 +58,17 @@ public class SimpleSaboteur extends Saboteur {
         for (TileConfiguration config : configurations) {
             Cell cell = _field.getCell(config.row, config.col);
             if (cell != null) {
-                cell.putUnit(new Tile(config.value));
+                Tile tile = new Tile(config.value);
+                tile.addListener(new TileStateListener());
+                cell.putUnit(tile);
             }
+        }
+    }
+
+    private class TileStateListener implements StateChangeListeners {
+        @Override
+        public void stateChanged(EventObject e) {
+            onTileMoved();
         }
     }
 
@@ -69,11 +83,15 @@ public class SimpleSaboteur extends Saboteur {
     private void placeRandomMine() {
         CellPosition pos = randomPosition();
         Cell cell = _field.getCell(pos.getRow(), pos.getColumn());
-        if (cell != null && cell.isEmpty()) {
+        if (cell != null && !hasMine(cell) && cell.getUnit(Tile.class) != null) {
             cell.putUnit(createMine());
         } else {
             placeRandomMine();
         }
+    }
+
+    private boolean hasMine(Cell cell) {
+        return cell.getUnit(Mine.class) != null;
     }
 
     private CellPosition randomPosition() {
@@ -84,12 +102,11 @@ public class SimpleSaboteur extends Saboteur {
 
     private Mine createMine() {
         int delay = 10 + _random.nextInt(20);
-        return new Mine(delay);
+        return new FreezeMine(delay, 10);
     }
 
     @Override
-    protected void periodicalEquipMines() {
-    }
+    protected void periodicalEquipMines() {}
 
     @Override
     protected boolean areTilesInFinishConfiguration() {

@@ -1,13 +1,11 @@
 package view;
 
-import field.Cell;
-import field.GameField;
+import cell.Cell;
+import game.GameField;
 import units.Tile;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class GameFieldView extends JPanel {
 
@@ -25,22 +23,18 @@ public class GameFieldView extends JPanel {
         setMaximumSize(fieldDimension);
 
         for (Cell c: _field) {
-            add( new CellWidget( c ) );
+            add( new CellWidget( c, this ) );
         }
 
-        addMouseListener(new MouseController());
         setFocusable(true);
     }
 
-    private class MouseController extends MouseAdapter {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            CellWidget clickedWidget = (CellWidget) e.getSource();
-            Cell clickedCell = clickedWidget.getCell();
-            Tile tile = clickedCell.getUnit(Tile.class);
+    public void handleCellClick(CellWidget cellWidget) {
+        Cell clickedCell = cellWidget.getCell();
+        Tile tile = clickedCell.getUnit(Tile.class);
 
-            if (tile != null) {
-                tile.push();
+        if (tile != null) {
+            if(tile.push()) {
                 repaint();
             }
         }

@@ -8,22 +8,11 @@ public abstract class MyTimer {
     protected boolean isRunning;
 
     public MyTimer() {
-        this.internalTimer = new java.util.Timer();
-        this.isRunning = false;
+        internalTimer = new Timer();
+        isRunning = false;
     }
 
-    public void schedule(TimerTask task, long period) {
-        if (!isRunning) {
-            internalTimer.scheduleAtFixedRate(task, 0, period);
-            isRunning = true;
-        }
-    }
+    public abstract void schedule(TimerTask task, long period);
 
-    public void stop() {
-        if (isRunning) {
-            internalTimer.cancel();
-            internalTimer = new java.util.Timer();
-            isRunning = false;
-        }
-    }
+    public abstract void stop();
 }

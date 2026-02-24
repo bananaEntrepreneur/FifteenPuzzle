@@ -1,6 +1,6 @@
 package cell;
 
-import field.Direction;
+import game.Direction;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,7 @@
 package listeners;
 
-public class StateChangeListeners {
+import java.util.EventObject;
+
+public interface StateChangeListeners {
+    void stateChanged(EventObject e);
 }

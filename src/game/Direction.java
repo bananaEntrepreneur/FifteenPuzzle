@@ -1,4 +1,4 @@
-package field;
+package game;
 
 // Направление - "север/юг/запад/восток"
 public class Direction {

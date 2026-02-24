@@ -1,4 +1,4 @@
-package field;
+package game;
 
 import cell.Cell;
 import cell.CellPosition;

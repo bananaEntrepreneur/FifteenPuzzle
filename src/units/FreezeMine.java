@@ -7,12 +7,12 @@ public class FreezeMine extends Mine {
 
     public FreezeMine(int explosionDelay, int freezeDuration) {
         super(explosionDelay);
-        this._freezeDuration = Math.max(0, freezeDuration);
+        _freezeDuration = Math.max(0, freezeDuration);
     }
 
     @Override
-    protected void affectCell(Cell cell) {
-        freeze(cell);
+    protected void applyEffect() {
+
     }
 
     private void freeze(Cell cell) {

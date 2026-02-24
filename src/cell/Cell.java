@@ -1,6 +1,6 @@
 package cell;
 
-import field.Direction;
+import game.Direction;
 import listeners.CellStateListener;
 import units.Unit;
 
@@ -27,18 +27,6 @@ public class Cell {
 
     public void removeListener(CellStateListener listener) {
         _listeners.remove(listener);
-    }
-
-    private void fireUnitPlaced(Unit unit) {
-        for (CellStateListener listener : _listeners) {
-            listener.unitPlaced(this, unit);
-        }
-    }
-
-    private void fireUnitExtracted(Unit unit) {
-        for (CellStateListener listener : _listeners) {
-            listener.unitExtracted(this, unit);
-        }
     }
 
     public int getRow() {
@@ -158,5 +146,17 @@ public class Cell {
 
     public boolean hasNeighbors() {
         return !_neighbors.isEmpty();
+    }
+
+    private void fireUnitPlaced(Unit unit) {
+        for (CellStateListener listener : _listeners) {
+            listener.unitPlaced(this, unit);
+        }
+    }
+
+    private void fireUnitExtracted(Unit unit) {
+        for (CellStateListener listener : _listeners) {
+            listener.unitExtracted(this, unit);
+        }
     }
 }

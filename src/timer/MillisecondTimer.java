@@ -1,14 +1,26 @@
 package timer;
 
+import java.util.TimerTask;
+
 public class MillisecondTimer extends MyTimer {
-    private final long intervalMs;
+    private final long _intervalMs;
 
     public MillisecondTimer(long intervalMs) {
         super();
-        this.intervalMs = intervalMs;
+        _intervalMs = intervalMs;
     }
 
     public long getInterval() {
-        return intervalMs;
+        return _intervalMs;
+    }
+
+    @Override
+    public void schedule(TimerTask task, long period) {
+
+    }
+
+    @Override
+    public void stop() {
+
     }
 }

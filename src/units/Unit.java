@@ -26,14 +26,6 @@ public abstract class Unit {
         _listeners.remove(listener);
     }
 
-    protected void fireStateChanged() {
-        for (StateChangeListeners listener : _listeners) {
-            listener.stateChanged(new EventObject(this));
-        }
-    }
-
-    protected abstract boolean canBelongTo(Cell owner);
-
     public Cell owner() {
         return _cell;
     }
@@ -59,4 +51,12 @@ public abstract class Unit {
         this._active = false;
         fireStateChanged();
     }
+
+    protected void fireStateChanged() {
+        for (StateChangeListeners listener : _listeners) {
+            listener.stateChanged(new EventObject(this));
+        }
+    }
+
+    protected abstract boolean canBelongTo(Cell owner);
 }

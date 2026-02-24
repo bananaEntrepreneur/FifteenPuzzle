@@ -2,18 +2,14 @@ package units;
 
 import cell.Cell;
 
-public class Mine extends Unit {
+public abstract class Mine extends Unit {
     private final int _explosionDelay;
     private int _timeToExplosion;
 
     public Mine(int explosionDelay) {
         super();
-        this._explosionDelay = Math.max(1, explosionDelay);
-        this._timeToExplosion = explosionDelay;
-    }
-
-    protected void mineExploded() {
-        fireStateChanged();
+        _explosionDelay = Math.max(1, explosionDelay);
+        _timeToExplosion = explosionDelay;
     }
 
     @Override
@@ -25,11 +21,23 @@ public class Mine extends Unit {
         if (!isActive()) {
             return;
         }
-        
+
         _timeToExplosion--;
         if (_timeToExplosion <= 0) {
             explode();
         }
+    }
+
+    public int getTimeToExplosion() {
+        return _timeToExplosion;
+    }
+
+    public int getExplosionDelay() {
+        return _explosionDelay;
+    }
+
+    protected void mineExploded() {
+        fireStateChanged();
     }
 
     protected void explode() {
@@ -49,35 +57,7 @@ public class Mine extends Unit {
         mineExploded();
     }
 
-    protected void applyEffect() {
-        Cell currentCell = owner();
-        if (currentCell == null) {
-            return;
-        }
-
-        affectCell(currentCell);
-
-        for (Cell neighbor : currentCell.getNeighborCells()) {
-            if (neighbor != null) {
-                affectCell(neighbor);
-            }
-        }
-    }
-
-    protected void affectCell(Cell cell) {
-        Tile tile = cell.getUnit(Tile.class);
-        if (tile != null) {
-            tile.deactivate();
-        }
-    }
-
-    public int getTimeToExplosion() {
-        return _timeToExplosion;
-    }
-
-    public int getExplosionDelay() {
-        return _explosionDelay;
-    }
+    protected abstract void applyEffect();
 
     @Override
     public String toString() {
