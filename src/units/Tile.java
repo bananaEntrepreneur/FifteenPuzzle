@@ -7,7 +7,7 @@ public class Tile extends Unit {
 
     public Tile(int number) {
         super();
-        this._number = number;
+        _number = number;
     }
 
     public boolean push() {
@@ -25,8 +25,8 @@ public class Tile extends Unit {
                 boolean moved = moveTo(neighbor);
                 if (moved) {
                     tileMoved();
+                    return true;
                 }
-                return moved;
             }
         }
 
@@ -34,8 +34,8 @@ public class Tile extends Unit {
     }
 
     @Override
-    public boolean canBelongTo(Cell owner) {
-        return owner != null;
+    public boolean canBelongTo(Cell c) {
+        return c == null || c.isEmpty();
     }
 
     public void tileMoved() {

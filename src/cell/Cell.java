@@ -47,9 +47,8 @@ public class Cell {
         if(added) {
             _units.add(u);
             fireUnitPlaced(u);
-            return true;
         }
-        return false;
+        return added;
     }
 
     public <T extends Unit> T getUnit(Class<T> cl) {

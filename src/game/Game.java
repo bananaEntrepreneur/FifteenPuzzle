@@ -28,7 +28,7 @@ public class Game implements GameListener {
         return _gameOver;
     }
 
-    public GameField get_field() {
+    public GameField getField() {
         return _field;
     }
 

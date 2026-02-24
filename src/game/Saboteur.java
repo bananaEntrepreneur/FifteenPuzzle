@@ -1,45 +1,42 @@
 package game;
 
-import cell.Cell;
 import listeners.GameListener;
 import timer.TickTimer;
 import timer.TimerFactory;
 import units.Mine;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.TimerTask;
+import java.util.*;
 
 public abstract class Saboteur {
-    protected final GameField _field;
-    protected final int _width;
-    protected final int _height;
-    protected final Random _random;
-    protected final int _mineProbability;
+    protected final GameField field;
+    protected final int width;
+    protected final int height;
+    protected final Random random;
+    protected final HashSet<Mine> mines = new HashSet<>();
+    protected final int mineProbability;
     protected final static int TICK_INTERVAL = 10;
-    protected final TickTimer _saboteurTime;
-    protected final List<GameListener> _gameListeners;
+    protected final TickTimer saboteurTime;
+    protected final List<GameListener> gameListeners;
 
-    protected Saboteur(GameField field, int width, int height, int mineProbability, TimerFactory timerFactory) {
-        _field = field;
-        _width = width;
-        _height = height;
-        _random = new Random();
-        _mineProbability = mineProbability;
-        _saboteurTime = timerFactory.getTickTimer(TICK_INTERVAL);
-        _gameListeners = new ArrayList<>();
+    protected Saboteur(GameField f, int w, int h, int mineProbability, TimerFactory timerFactory) {
+        field = f;
+        width = w;
+        height = h;
+        random = new Random();
+        this.mineProbability = mineProbability;
+        saboteurTime = timerFactory.getTickTimer(TICK_INTERVAL);
+        gameListeners = new ArrayList<>();
     }
 
     public void addGameListener(GameListener listener) {
         if (listener != null) {
-            _gameListeners.add(listener);
+            gameListeners.add(listener);
         }
     }
 
     public void removeGameListener(GameListener listener) {
-        _gameListeners.remove(listener);
+        gameListeners.remove(listener);
     }
 
     public void start() {
@@ -47,7 +44,7 @@ public abstract class Saboteur {
 
         startEquipMines();
 
-        _saboteurTime.schedule(new TimerTask() {
+        saboteurTime.schedule(new TimerTask() {
             @Override
             public void run() {
                 onTick();
@@ -56,8 +53,8 @@ public abstract class Saboteur {
     }
 
     public void deactivate() {
-        _saboteurTime.stop();
-        _field.deactivate();
+        saboteurTime.stop();
+        field.deactivate();
     }
 
     protected void onTick() {
@@ -66,7 +63,7 @@ public abstract class Saboteur {
     }
 
     protected void fireTilesInFinishConfiguration() {
-        for (GameListener listener : _gameListeners) {
+        for (GameListener listener : gameListeners) {
             listener.tilesInFinishConfiguration();
         }
     }
@@ -88,12 +85,8 @@ public abstract class Saboteur {
     protected abstract Dimension getFieldSize();
 
     private void tickMines() {
-        for (Cell cell : _field) {
-            for (var unit : cell.getAllUnits()) {
-                if (unit instanceof Mine) {
-                    ((Mine) unit).tick();
-                }
-            }
+        for (Mine mine : mines) {
+            mine.tick();
         }
     }
 }

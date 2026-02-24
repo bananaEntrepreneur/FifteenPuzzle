@@ -33,8 +33,8 @@ public class SimpleSaboteur extends Saboteur {
         List<TileConfiguration> configs = new ArrayList<>();
 
         int index = 0;
-        for (int row = 0; row < _height; row++) {
-            for (int col = 0; col < _width; col++) {
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
                 int value = values.get(index++);
                 if (value != 0) {
                     configs.add(new TileConfiguration(row, col, value));
@@ -46,17 +46,17 @@ public class SimpleSaboteur extends Saboteur {
 
     private List<Integer> createShuffledValues() {
         List<Integer> values = new ArrayList<>();
-        for (int i = 1; i < _width * _height; i++) {
+        for (int i = 1; i < width * height; i++) {
             values.add(i);
         }
         values.add(0);
-        Collections.shuffle(values, _random);
+        Collections.shuffle(values, random);
         return values;
     }
 
     private void placeTiles(List<TileConfiguration> configurations) {
         for (TileConfiguration config : configurations) {
-            Cell cell = _field.getCell(config.row, config.col);
+            Cell cell = field.getCell(config.row, config.col);
             if (cell != null) {
                 Tile tile = new Tile(config.value);
                 tile.addListener(new TileStateListener());
@@ -74,7 +74,7 @@ public class SimpleSaboteur extends Saboteur {
 
     @Override
     protected void startEquipMines() {
-        int mineCount = (_width * _height) / _mineProbability;
+        int mineCount = (width * height) / mineProbability;
         for (int i = 0; i < mineCount; i++) {
             placeRandomMine();
         }
@@ -82,9 +82,11 @@ public class SimpleSaboteur extends Saboteur {
 
     private void placeRandomMine() {
         CellPosition pos = randomPosition();
-        Cell cell = _field.getCell(pos.getRow(), pos.getColumn());
+        Cell cell = field.getCell(pos.getRow(), pos.getColumn());
         if (cell != null && !hasMine(cell) && cell.getUnit(Tile.class) != null) {
-            cell.putUnit(createMine());
+            Mine mine = createMine();
+            mines.add(mine);
+            cell.putUnit(mine);
         } else {
             placeRandomMine();
         }
@@ -95,13 +97,13 @@ public class SimpleSaboteur extends Saboteur {
     }
 
     private CellPosition randomPosition() {
-        int row = _random.nextInt(_height);
-        int col = _random.nextInt(_width);
+        int row = random.nextInt(height);
+        int col = random.nextInt(width);
         return new CellPosition(row, col);
     }
 
     private Mine createMine() {
-        int delay = 10 + _random.nextInt(20);
+        int delay = 10 + random.nextInt(20);
         return new FreezeMine(delay, 10);
     }
 
@@ -110,8 +112,8 @@ public class SimpleSaboteur extends Saboteur {
 
     @Override
     protected boolean areTilesInFinishConfiguration() {
-        for (int row = 0; row < _height; row++) {
-            for (int col = 0; col < _width; col++) {
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
                 if (!isCellInCorrectPosition(row, col)) {
                     return false;
                 }
@@ -121,14 +123,14 @@ public class SimpleSaboteur extends Saboteur {
     }
 
     private boolean isCellInCorrectPosition(int row, int col) {
-        Cell cell = _field.getCell(row, col);
+        Cell cell = field.getCell(row, col);
         if (cell == null) {
             return false;
         }
 
         Tile tile = cell.getUnit(Tile.class);
-        int expectedValue = row * _width + col + 1;
-        boolean isLastCell = (row * _width + col + 1) == (_width * _height);
+        int expectedValue = row * width + col + 1;
+        boolean isLastCell = (row * width + col + 1) == (width * height);
 
         if (isLastCell) {
             return tile == null;
@@ -138,7 +140,7 @@ public class SimpleSaboteur extends Saboteur {
 
     @Override
     protected Dimension getFieldSize() {
-        return new Dimension(_width, _height);
+        return new Dimension(width, height);
     }
 
     private static class TileConfiguration {
