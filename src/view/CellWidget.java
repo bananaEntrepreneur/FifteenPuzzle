@@ -2,6 +2,7 @@ package view;
 
 import cell.Cell;
 import listeners.CellStateListener;
+import listeners.StateChangeListeners;
 import units.Mine;
 import units.Tile;
 import units.Unit;
@@ -17,9 +18,13 @@ public class CellWidget extends JPanel implements CellStateListener {
     private static final Color BACKGROUND_COLOR = new Color(252, 252, 196);
     private static final Color RECT_COLOR = new Color(100, 100, 200);
     private static final Color FONT_COLOR = new Color(54, 190, 82);
+    private static final Color DEACTIVATED_COLOR = new Color(150, 150, 150);
+    private static final Color MINE_COLOR = new Color(255, 100, 100);
+    private static final Color FROZEN_COLOR = new Color(100, 200, 255);
 
     private final Cell _cell;
     private final GameFieldView _parent;
+    private final UnitStateListener _unitStateListener;
 
     public CellWidget(Cell cell, GameFieldView parent) {
         setPreferredSize(new Dimension(CELL_SIZE, CELL_SIZE));
@@ -28,10 +33,9 @@ public class CellWidget extends JPanel implements CellStateListener {
 
         _cell = cell;
         _parent = parent;
+        _unitStateListener = new UnitStateListener();
         _cell.addListener(this);
 
-        setToolTipText("");
-        
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -39,6 +43,13 @@ public class CellWidget extends JPanel implements CellStateListener {
                 repaint();
             }
         });
+    }
+
+    private class UnitStateListener implements StateChangeListeners {
+        @Override
+        public void stateChanged(java.util.EventObject event) {
+            repaint();
+        }
     }
 
     public Cell getCell() {
@@ -60,7 +71,7 @@ public class CellWidget extends JPanel implements CellStateListener {
 
         if (tile != null) {
             String msg = tile.toString();
-            gr2d.setColor(FONT_COLOR);
+            gr2d.setColor(tile.isActive() ? FONT_COLOR : DEACTIVATED_COLOR);
             FontMetrics fm = g.getFontMetrics();
             int msgWidth = fm.stringWidth(msg);
             int msgHeight = fm.getHeight();
@@ -68,40 +79,34 @@ public class CellWidget extends JPanel implements CellStateListener {
         }
 
         if (mine != null) {
-            String msg = mine.toString();
-            gr2d.setColor(Color.RED);
-            FontMetrics fm = g.getFontMetrics();
-            int msgWidth = fm.stringWidth(msg);
-            gr2d.drawString(msg, (CELL_SIZE - msgWidth) / 2, CELL_SIZE - 10);
+            drawMine(gr2d, mine);
         }
     }
 
-    @Override
-    public String getToolTipText(MouseEvent e)  {
-        Tile tile = _cell.getUnit(Tile.class);
-        Mine mine = _cell.getUnit(Mine.class);
-        
-        StringBuilder tip = new StringBuilder();
-        if (tile != null) {
-            tip.append(tile.toString());
+    private void drawMine(Graphics2D gr2d, Mine mine) {
+        gr2d.setColor(MINE_COLOR);
+        FontMetrics fm = gr2d.getFontMetrics();
+
+        if (mine.isActive()) {
+            String m = mine.toString();
+            int mWidth = fm.stringWidth(m);
+            gr2d.drawString(m, (CELL_SIZE - mWidth) / 2, CELL_SIZE - 10);
         }
-        if (mine != null) {
-            if (tip.length() > 0) {
-                tip.append(", ");
-            }
-            tip.append(mine.toString());
-        }
-        
-        return tip.length() > 0 ? tip.toString() : null;
     }
 
     @Override
     public void unitPlaced(Cell cell, Unit unit) {
+        if (unit != null) {
+            unit.addListener(_unitStateListener);
+        }
         repaint();
     }
 
     @Override
     public void unitExtracted(Cell cell, Unit unit) {
+        if (unit != null) {
+            unit.removeListener(_unitStateListener);
+        }
         repaint();
     }
 }
