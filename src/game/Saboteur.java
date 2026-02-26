@@ -1,7 +1,6 @@
 package game;
 
 import listeners.GameListener;
-import timer.TickTimer;
 import timer.TimerFactory;
 import units.Mine;
 
@@ -15,9 +14,8 @@ public abstract class Saboteur {
     protected final Random random;
     protected final HashSet<Mine> mines = new HashSet<>();
     protected final int mineProbability;
-    protected final static int TICK_INTERVAL = 10;
-    protected final TickTimer saboteurTime;
     protected final List<GameListener> gameListeners;
+    protected final TimerFactory timerFactory;
 
     protected Saboteur(GameField f, int w, int h, int mineProbability, TimerFactory timerFactory) {
         field = f;
@@ -25,7 +23,7 @@ public abstract class Saboteur {
         height = h;
         random = new Random();
         this.mineProbability = mineProbability;
-        saboteurTime = timerFactory.getTickTimer(TICK_INTERVAL);
+        this.timerFactory = timerFactory;
         gameListeners = new ArrayList<>();
     }
 
@@ -39,27 +37,21 @@ public abstract class Saboteur {
         gameListeners.remove(listener);
     }
 
+    public List<GameListener> getGameListeners() {
+        return Collections.unmodifiableList(gameListeners);
+    }
+
     public void start() {
+        Dimension fieldSize = getFieldSize();
+        field.setSize(fieldSize);
+
         equipTiles();
 
         startEquipMines();
-
-        saboteurTime.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                onTick();
-            }
-        }, TICK_INTERVAL);
     }
 
     public void deactivate() {
-        saboteurTime.stop();
         field.deactivate();
-    }
-
-    protected void onTick() {
-        tickMines();
-        periodicalEquipMines();
     }
 
     protected void fireTilesInFinishConfiguration() {
@@ -68,7 +60,7 @@ public abstract class Saboteur {
         }
     }
 
-    protected void onTileMoved() {
+    public void onTileMoved() {
         if (areTilesInFinishConfiguration()) {
             fireTilesInFinishConfiguration();
         }
@@ -83,10 +75,4 @@ public abstract class Saboteur {
     protected abstract boolean areTilesInFinishConfiguration();
 
     protected abstract Dimension getFieldSize();
-
-    private void tickMines() {
-        for (Mine mine : mines) {
-            mine.tick();
-        }
-    }
 }
