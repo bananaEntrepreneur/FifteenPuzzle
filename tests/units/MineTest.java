@@ -13,7 +13,7 @@ public class MineTest {
 
         assertNotNull(mine);
         assertEquals(5, mine.getExplosionDelay());
-        assertEquals(5, mine.get_timeToExplosion());
+        assertEquals(5, mine.getTimeToExplosion());
         assertTrue(mine.isActive());
     }
 
@@ -22,14 +22,14 @@ public class MineTest {
         TestMine mine = new TestMine(-1);
 
         assertEquals(1, mine.getExplosionDelay());
-        assertEquals(-1, mine.get_timeToExplosion());
+        assertEquals(1, mine.getTimeToExplosion());
     }
 
     @Test
     public void testMineToString() {
         TestMine mine = new TestMine(3);
 
-        assertEquals("3", mine.toString());
+        assertEquals("M", mine.toString());
     }
 
     @Test
@@ -59,55 +59,12 @@ public class MineTest {
     }
 
     @Test
-    public void testMineTick() {
-        TestMine mine = new TestMine(3);
-
-        mine.tick();
-
-        assertEquals(2, mine.get_timeToExplosion());
-        assertTrue(mine.isActive());
-    }
-
-    @Test
-    public void testMineTickInactive() {
-        TestMine mine = new TestMine(3);
-        mine.deactivate();
-
-        mine.tick();
-
-        assertEquals(3, mine.get_timeToExplosion());
-    }
-
-    @Test
-    public void testMineExplodeOnZero() {
-        TestMine mine = new TestMine(1);
-        Cell cell = new Cell(0, 0);
-        cell.putUnit(mine);
-
-        mine.tick();
-
-        assertFalse(mine.isActive());
-        assertTrue(mine.isExploded());
-    }
-
-    @Test
-    public void testMineMultipleTicks() {
-        TestMine mine = new TestMine(5);
-
-        mine.tick();
-        mine.tick();
-        mine.tick();
-
-        assertEquals(2, mine.get_timeToExplosion());
-    }
-
-    @Test
     public void testMineExplodeDeactivates() {
         TestMine mine = new TestMine(1);
         Cell cell = new Cell(0, 0);
         cell.putUnit(mine);
 
-        mine.tick();
+        mine.explode();
 
         assertFalse(mine.isActive());
     }

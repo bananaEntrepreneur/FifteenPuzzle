@@ -83,7 +83,6 @@ public class CellTest {
         Tile tile = new Tile(3);
         cell.putUnit(tile);
 
-        // Assuming Mine is a different type than Tile
         Unit mine = cell.getUnit(Mine.class);
 
         assertNull(mine);

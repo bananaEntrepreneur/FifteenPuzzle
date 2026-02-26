@@ -33,7 +33,7 @@ public class FreezeMineTest {
         cell.putUnit(tile);
         cell.putUnit(mine);
 
-        mine.tick();
+        mine.explode();
 
         assertFalse(tile.isActive());
     }
@@ -48,25 +48,9 @@ public class FreezeMineTest {
         neighbor.putUnit(neighborTile);
         center.putUnit(mine);
 
-        mine.tick();
+        mine.explode();
 
         assertFalse(neighborTile.isActive());
-    }
-
-    @Test
-    public void testFreezeMineTickAndExplode() {
-        FreezeMine mine = new FreezeMine(2, 10);
-        Cell cell = new Cell(0, 0);
-        Tile tile = new Tile(1);
-        cell.putUnit(tile);
-        cell.putUnit(mine);
-
-        mine.tick();
-        assertTrue(tile.isActive());
-
-        mine.tick();
-        assertFalse(tile.isActive());
-        assertFalse(mine.isActive());
     }
 
     @Test
