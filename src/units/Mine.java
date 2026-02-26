@@ -1,15 +1,26 @@
 package units;
 
 import cell.Cell;
+import timer.TickTimer;
+import timer.TimerFactory;
 
 public abstract class Mine extends Unit {
     private final int _explosionDelay;
-    private int _timeToExplosion;
+    private TickTimer _explosionTimer;
 
     public Mine(int explosionDelay) {
         super();
         _explosionDelay = Math.max(1, explosionDelay);
-        _timeToExplosion = explosionDelay;
+    }
+
+    public void startTimer(TimerFactory timerFactory) {
+        _explosionTimer = timerFactory.getTickTimer(_explosionDelay);
+        _explosionTimer.schedule(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                explode();
+            }
+        }, 1);
     }
 
     @Override
@@ -17,26 +28,15 @@ public abstract class Mine extends Unit {
         return owner != null;
     }
 
-    public void tick() {
-        if (!isActive()) {
-            return;
-        }
-
-        _timeToExplosion--;
-        if (_timeToExplosion <= 0) {
-            explode();
-        }
-    }
-
     public int getTimeToExplosion() {
-        return _timeToExplosion;
+        return _explosionTimer != null ? _explosionTimer.getTickInterval() : _explosionDelay;
     }
 
     public int getExplosionDelay() {
         return _explosionDelay;
     }
 
-    protected void mineExploded() {
+    protected void onExploded() {
         fireStateChanged();
     }
 
@@ -51,16 +51,14 @@ public abstract class Mine extends Unit {
         }
 
         applyEffect();
-
         deactivate();
-
-        mineExploded();
+        onExploded();
     }
 
     protected abstract void applyEffect();
 
     @Override
     public String toString() {
-        return "M" + _timeToExplosion;
+        return "M";
     }
 }

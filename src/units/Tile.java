@@ -21,7 +21,7 @@ public class Tile extends Unit {
         }
 
         for (Cell neighbor : currentCell.getNeighborCells()) {
-            if (neighbor != null && neighbor.isEmpty()) {
+            if (neighbor != null && neighbor.getUnits(Tile.class).isEmpty()) {
                 boolean moved = moveTo(neighbor);
                 if (moved) {
                     tileMoved();
@@ -35,7 +35,7 @@ public class Tile extends Unit {
 
     @Override
     public boolean canBelongTo(Cell c) {
-        return c == null || c.isEmpty();
+        return c == null || !c.hasUnit(Tile.class);
     }
 
     public void tileMoved() {
@@ -74,9 +74,6 @@ public class Tile extends Unit {
         }
 
         boolean placed = neighbor.putUnit(this);
-        if (placed) {
-            fireStateChanged();
-        }
         return placed;
     }
 }

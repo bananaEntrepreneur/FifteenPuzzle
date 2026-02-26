@@ -15,4 +15,8 @@ public abstract class MyTimer {
     public abstract void schedule(TimerTask task, long period);
 
     public abstract void stop();
+
+    public boolean isRunning() {
+        return isRunning;
+    }
 }

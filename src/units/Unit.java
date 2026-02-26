@@ -13,7 +13,7 @@ public abstract class Unit {
     private final List<StateChangeListeners> _listeners = new ArrayList<>();
 
     public Unit() {
-        this._active = true;
+        _active = true;
     }
 
     public void addListener(StateChangeListeners listener) {
@@ -31,10 +31,10 @@ public abstract class Unit {
     }
 
     public boolean setOwner(Cell cell) {
-        if(!canBelongTo(cell)) {
+        if (!canBelongTo(cell)) {
             throw new IllegalArgumentException("Cannot belong to this cell!");
         }
-        this._cell = cell;
+        _cell = cell;
         return true;
     }
 
@@ -43,12 +43,12 @@ public abstract class Unit {
     }
 
     public void activate() {
-        this._active = true;
+        _active = true;
         fireStateChanged();
     }
 
     public void deactivate() {
-        this._active = false;
+        _active = false;
         fireStateChanged();
     }
 

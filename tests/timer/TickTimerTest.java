@@ -1,5 +1,6 @@
 package timer;
 
+import listeners.TickListener;
 import org.junit.jupiter.api.Test;
 
 import java.util.TimerTask;
@@ -154,7 +155,7 @@ public class TickTimerTest {
         TickTimer timer = new TickTimer(1);
         AtomicInteger listenerCount = new AtomicInteger(0);
 
-        TickTimer.TickListener listener = () -> listenerCount.incrementAndGet();
+        TickListener listener = () -> listenerCount.incrementAndGet();
         timer.addTickListener(listener);
         timer.removeTickListener(listener);
         timer.schedule(new DummyTask(), 1000);

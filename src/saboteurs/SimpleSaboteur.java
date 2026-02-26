@@ -4,22 +4,22 @@ import cell.Cell;
 import cell.CellPosition;
 import game.GameField;
 import game.Saboteur;
-import listeners.StateChangeListeners;
+import listeners.MineStateListener;
+import listeners.TileStateListener;
 import timer.TimerFactory;
 import units.FreezeMine;
-import units.Tile;
 import units.Mine;
+import units.Tile;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EventObject;
 import java.util.List;
 
 public class SimpleSaboteur extends Saboteur {
 
-    public SimpleSaboteur(GameField field, int width, int height) {
-        super(field, width, height, 10, new TimerFactory());
+    public SimpleSaboteur(GameField field, int width, int height, TimerFactory timerFactory) {
+        super(field, width, height, 10, timerFactory);
     }
 
     @Override
@@ -30,18 +30,18 @@ public class SimpleSaboteur extends Saboteur {
 
     private List<TileConfiguration> generateSolvableConfiguration() {
         List<Integer> values = createShuffledValues();
-        List<TileConfiguration> configs = new ArrayList<>();
+        List<TileConfiguration> configurations = new ArrayList<>();
 
         int index = 0;
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 int value = values.get(index++);
                 if (value != 0) {
-                    configs.add(new TileConfiguration(row, col, value));
+                    configurations.add(new TileConfiguration(row, col, value));
                 }
             }
         }
-        return configs;
+        return configurations;
     }
 
     private List<Integer> createShuffledValues() {
@@ -59,16 +59,9 @@ public class SimpleSaboteur extends Saboteur {
             Cell cell = field.getCell(config.row, config.col);
             if (cell != null) {
                 Tile tile = new Tile(config.value);
-                tile.addListener(new TileStateListener());
+                tile.addListener(new TileStateListener(this));
                 cell.putUnit(tile);
             }
-        }
-    }
-
-    private class TileStateListener implements StateChangeListeners {
-        @Override
-        public void stateChanged(EventObject e) {
-            onTileMoved();
         }
     }
 
@@ -81,15 +74,22 @@ public class SimpleSaboteur extends Saboteur {
     }
 
     private void placeRandomMine() {
-        CellPosition pos = randomPosition();
-        Cell cell = field.getCell(pos.getRow(), pos.getColumn());
-        if (cell != null && !hasMine(cell) && cell.getUnit(Tile.class) != null) {
+        CellPosition position = randomPosition();
+        Cell cell = field.getCell(position.getRow(), position.getColumn());
+
+        if (isValidMinePosition(cell)) {
             Mine mine = createMine();
             mines.add(mine);
             cell.putUnit(mine);
+            mine.addListener(new MineStateListener(timerFactory));
+            mine.startTimer(timerFactory);
         } else {
             placeRandomMine();
         }
+    }
+
+    private boolean isValidMinePosition(Cell cell) {
+        return cell != null && !hasMine(cell) && cell.getUnit(Tile.class) != null;
     }
 
     private boolean hasMine(Cell cell) {
@@ -108,7 +108,11 @@ public class SimpleSaboteur extends Saboteur {
     }
 
     @Override
-    protected void periodicalEquipMines() {}
+    protected void periodicalEquipMines() {
+        if (random.nextInt(100) < mineProbability) {
+            placeRandomMine();
+        }
+    }
 
     @Override
     protected boolean areTilesInFinishConfiguration() {

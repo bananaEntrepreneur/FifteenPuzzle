@@ -2,17 +2,22 @@ package view;
 
 import cell.Cell;
 import game.GameField;
+import listeners.TickListener;
+import timer.TickTimer;
+import timer.TimerFactory;
 import units.Tile;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class GameFieldView extends JPanel {
+public class GameFieldView extends JPanel implements TickListener {
 
     private final GameField _field;
+    private final TimerFactory _timerFactory;
 
-    public GameFieldView(GameField field) {
+    public GameFieldView(GameField field, TimerFactory timerFactory) {
         _field = field;
+        _timerFactory = timerFactory;
 
         setLayout(new GridLayout(_field.getHeight(), _field.getWidth()));
 
@@ -27,6 +32,15 @@ public class GameFieldView extends JPanel {
         }
 
         setFocusable(true);
+
+        for (TickTimer timer : _timerFactory.getTickTimers()) {
+            timer.addTickListener(this);
+        }
+    }
+
+    @Override
+    public void onTick() {
+        repaintMines();
     }
 
     public void handleCellClick(CellWidget cellWidget) {
@@ -35,8 +49,13 @@ public class GameFieldView extends JPanel {
 
         if (tile != null) {
             if(tile.push()) {
+                _timerFactory.tickTimers();
                 repaint();
             }
         }
+    }
+
+    public void repaintMines() {
+        repaint();
     }
 }
