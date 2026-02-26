@@ -103,6 +103,18 @@ public class Cell {
         return _units.isEmpty();
     }
 
+    public boolean hasUnit(Class<? extends Unit> unitClass) {
+        if (unitClass == null) {
+            return false;
+        }
+        for (Unit unit : _units) {
+            if (unitClass.isInstance(unit)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean hasUnits() {
         return !_units.isEmpty();
     }
