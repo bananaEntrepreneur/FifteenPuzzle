@@ -40,7 +40,7 @@ public class GameFieldView extends JPanel implements TickListener {
 
     @Override
     public void onTick() {
-        repaintMines();
+        repaint();
     }
 
     public void handleCellClick(CellWidget cellWidget) {
@@ -53,9 +53,5 @@ public class GameFieldView extends JPanel implements TickListener {
                 repaint();
             }
         }
-    }
-
-    public void repaintMines() {
-        repaint();
     }
 }

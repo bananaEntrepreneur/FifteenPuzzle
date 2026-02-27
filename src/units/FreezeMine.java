@@ -2,6 +2,7 @@ package units;
 
 import cell.Cell;
 import timer.MillisecondTimer;
+import timer.TimerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,6 +12,7 @@ public class FreezeMine extends Mine {
     private final Set<Unit> _frozenUnits;
     private MillisecondTimer _freezeTimer;
     private boolean _exploded;
+    private TimerFactory _timerFactory;
 
     public FreezeMine(int explosionDelay, int freezeDuration) {
         super(explosionDelay);
@@ -27,9 +29,14 @@ public class FreezeMine extends Mine {
         return _exploded && _freezeTimer != null && _freezeTimer.isRunning();
     }
 
-    public void startFreezeTimer(timer.TimerFactory timerFactory) {
-        if (_exploded && _freezeDuration > 0 && _freezeTimer == null) {
-            timer.MillisecondTimer freezeTimer = timerFactory.getMillisecondTimer(1000);
+    @Override
+    protected void onExploded() {
+        startFreezeTimer();
+    }
+
+    private void startFreezeTimer() {
+        if (_freezeDuration > 0 && _freezeTimer == null && _timerFactory != null) {
+            MillisecondTimer freezeTimer = _timerFactory.getMillisecondTimer(1000);
             _freezeTimer = freezeTimer;
             freezeTimer.schedule(new java.util.TimerTask() {
                 @Override
@@ -40,19 +47,8 @@ public class FreezeMine extends Mine {
         }
     }
 
-    @Override
-    protected void explode() {
-        if (!isActive()) {
-            return;
-        }
-
-        Cell currentCell = owner();
-        if (currentCell == null) {
-            return;
-        }
-
-        applyEffect();
-        onExploded();
+    public void setTimerFactory(TimerFactory timerFactory) {
+        _timerFactory = timerFactory;
     }
 
     @Override

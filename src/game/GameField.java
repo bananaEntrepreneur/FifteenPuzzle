@@ -72,15 +72,12 @@ public class GameField implements Iterable<Cell> {
                 if (row > 0) {
                     currentCell.addNeighbor(Direction.north(), _cells.get(new CellPosition(row - 1, col)));
                 }
-
                 if (row < _height - 1) {
                     currentCell.addNeighbor(Direction.south(), _cells.get(new CellPosition(row + 1, col)));
                 }
-
                 if (col > 0) {
                     currentCell.addNeighbor(Direction.west(), _cells.get(new CellPosition(row, col - 1)));
                 }
-
                 if (col < _width - 1) {
                     currentCell.addNeighbor(Direction.east(), _cells.get(new CellPosition(row, col + 1)));
                 }

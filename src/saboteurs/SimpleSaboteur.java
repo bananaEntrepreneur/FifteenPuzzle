@@ -4,11 +4,9 @@ import cell.Cell;
 import cell.CellPosition;
 import game.GameField;
 import game.Saboteur;
-import listeners.MineStateListener;
 import listeners.TileStateListener;
 import timer.TimerFactory;
 import units.FreezeMine;
-import units.Mine;
 import units.Tile;
 
 import java.awt.Dimension;
@@ -78,10 +76,10 @@ public class SimpleSaboteur extends Saboteur {
         Cell cell = field.getCell(position.getRow(), position.getColumn());
 
         if (isValidMinePosition(cell)) {
-            Mine mine = createMine();
+            FreezeMine mine = createMine();
             mines.add(mine);
             cell.putUnit(mine);
-            mine.addListener(new MineStateListener(timerFactory));
+            mine.setTimerFactory(timerFactory);
             mine.startTimer(timerFactory);
         } else {
             placeRandomMine();
@@ -93,7 +91,7 @@ public class SimpleSaboteur extends Saboteur {
     }
 
     private boolean hasMine(Cell cell) {
-        return cell.getUnit(Mine.class) != null;
+        return cell.getUnit(FreezeMine.class) != null;
     }
 
     private CellPosition randomPosition() {
@@ -102,7 +100,7 @@ public class SimpleSaboteur extends Saboteur {
         return new CellPosition(row, col);
     }
 
-    private Mine createMine() {
+    private FreezeMine createMine() {
         int delay = 10 + random.nextInt(20);
         return new FreezeMine(delay, 10);
     }

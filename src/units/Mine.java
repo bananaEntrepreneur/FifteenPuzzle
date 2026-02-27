@@ -25,7 +25,7 @@ public abstract class Mine extends Unit {
 
     @Override
     public boolean canBelongTo(Cell owner) {
-        return owner != null;
+        return owner != null || owner() != null;
     }
 
     public int getTimeToExplosion() {
@@ -36,9 +36,7 @@ public abstract class Mine extends Unit {
         return _explosionDelay;
     }
 
-    protected void onExploded() {
-        fireStateChanged();
-    }
+    protected abstract void onExploded();
 
     protected void explode() {
         if (!isActive()) {
@@ -51,6 +49,7 @@ public abstract class Mine extends Unit {
         }
 
         applyEffect();
+        currentCell.extractUnit(this);
         deactivate();
         onExploded();
     }

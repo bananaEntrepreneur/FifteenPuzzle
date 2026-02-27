@@ -4,7 +4,10 @@ import game.Saboteur;
 
 import java.util.EventObject;
 
-public class TileStateListener implements StateChangeListeners {
+/**
+ * Listener that notifies the saboteur when a tile moves.
+ */
+public class TileStateListener extends UnitStateListener {
     private final Saboteur _saboteur;
 
     public TileStateListener(Saboteur saboteur) {
@@ -12,7 +15,7 @@ public class TileStateListener implements StateChangeListeners {
     }
 
     @Override
-    public void stateChanged(EventObject event) {
+    public void onEvent(EventObject event) {
         _saboteur.onTileMoved();
     }
 }

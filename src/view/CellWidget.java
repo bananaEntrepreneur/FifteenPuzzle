@@ -2,7 +2,7 @@ package view;
 
 import cell.Cell;
 import listeners.CellStateListener;
-import listeners.StateChangeListeners;
+import listeners.EventListener;
 import units.Mine;
 import units.Tile;
 import units.Unit;
@@ -33,7 +33,7 @@ public class CellWidget extends JPanel implements CellStateListener {
 
         _cell = cell;
         _parent = parent;
-        _unitStateListener = new UnitStateListener();
+        _unitStateListener = new UnitStateListener(this);
         _cell.addListener(this);
 
         addMouseListener(new MouseAdapter() {
@@ -45,10 +45,16 @@ public class CellWidget extends JPanel implements CellStateListener {
         });
     }
 
-    private class UnitStateListener implements StateChangeListeners {
+    private static class UnitStateListener implements EventListener<java.util.EventObject> {
+        private final CellWidget widget;
+        
+        UnitStateListener(CellWidget widget) {
+            this.widget = widget;
+        }
+        
         @Override
-        public void stateChanged(java.util.EventObject event) {
-            repaint();
+        public void onEvent(java.util.EventObject event) {
+            widget.repaint();
         }
     }
 
