@@ -69,6 +69,7 @@ public class SimpleSaboteur extends Saboteur {
         for (int i = 0; i < mineCount; i++) {
             placeRandomMine();
         }
+        periodicalEquipMines();
     }
 
     private void placeRandomMine() {
@@ -107,7 +108,7 @@ public class SimpleSaboteur extends Saboteur {
 
     @Override
     protected void periodicalEquipMines() {
-        if (random.nextInt(100) < mineProbability) {
+        if (random.nextInt(200) < mineProbability) {
             placeRandomMine();
         }
     }

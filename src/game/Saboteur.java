@@ -64,6 +64,7 @@ public abstract class Saboteur {
         if (areTilesInFinishConfiguration()) {
             fireTilesInFinishConfiguration();
         }
+        periodicalEquipMines();
     }
 
     protected abstract void equipTiles();
