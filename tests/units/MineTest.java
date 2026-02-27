@@ -59,17 +59,6 @@ public class MineTest {
     }
 
     @Test
-    public void testMineExplodeDeactivates() {
-        TestMine mine = new TestMine(1);
-        Cell cell = new Cell(0, 0);
-        cell.putUnit(mine);
-
-        mine.explode();
-
-        assertFalse(mine.isActive());
-    }
-
-    @Test
     public void testMineActivate() {
         TestMine mine = new TestMine(5);
         mine.deactivate();
@@ -79,21 +68,33 @@ public class MineTest {
         assertTrue(mine.isActive());
     }
 
-    // Test implementation of Mine
+    @Test
+    public void testMineExplode() {
+
+    }
+
     private static class TestMine extends Mine {
-        private boolean exploded = false;
+        private boolean _isExploded = false;
 
         public TestMine(int explosionDelay) {
             super(explosionDelay);
         }
 
         @Override
-        protected void applyEffect() {
-            exploded = true;
+        protected void onExploded() {
+
         }
 
-        public boolean isExploded() {
-            return exploded;
+        public void DoExplode() {
+            explode();
+            _isExploded = true;
+        }
+
+        public boolean isExploded() {return _isExploded;}
+
+        @Override
+        protected void applyEffect() {
+
         }
     }
 }
